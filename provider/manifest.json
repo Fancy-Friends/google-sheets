@@ -1,0 +1,70 @@
+{
+  "$comment": "THE hand-written part. Four packages -- ui, js, php, py -- are generated from this directory and are never edited. Fix this file, then regenerate. Every fact here is read from Google's own discovery document (https://sheets.googleapis.com/$discovery/rest?version=v4), not from docs prose.",
+
+  "connectorApi": 1,
+
+  "service": "google_sheets",
+  "title": "Google Sheets",
+  "domain": "productivity",
+  "docs": "https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/append",
+
+  "auth": "oauth2",
+  "requires": ["accessToken", "refreshToken", "clientId", "clientSecret"],
+  "authorize": {
+    "kind": "bearer",
+    "credential": "accessToken"
+  },
+
+  "oauth": {
+    "flow": "authorization_code",
+    "authorizeUrl": "https://accounts.google.com/o/oauth2/v2/auth",
+    "tokenUrl": "https://oauth2.googleapis.com/token",
+    "scopes": ["https://www.googleapis.com/auth/spreadsheets"],
+    "accessTokenCredential": "accessToken",
+    "refreshTokenCredential": "refreshToken",
+    "accessTokenTtlSeconds": 3600,
+    "$scopeComment": "The FULL spreadsheets scope, not drive.file. append writes to a sheet the user names by id, and drive.file only reaches files the app itself created -- so drive.file would work in testing (where the app made the sheet) and fail against the spreadsheet somebody actually wants to append to. Read from the discovery document's scopes for this exact method.",
+    "$comment": "The package DECLARES the dance and does not perform it. A consent screen needs a browser, a redirect URI and somewhere to persist the result, and all three belong to the host. Google's access tokens last ONE HOUR, so a connection that is not refreshed stops working within the day -- which is why refreshToken is required rather than optional."
+  },
+
+  "sandbox": "none",
+  "$sandboxComment": "CHECKED. Google has no test estate for Sheets: there is one API, and a test spreadsheet is a real spreadsheet in somebody's real Drive. Anything an action appends is appended for real.",
+  "sandboxNote": "Google has no sandbox for Sheets. A test spreadsheet is a real one in a real Drive, so every append is real -- point this at a scratch sheet, not a production one. The faker is the only way to develop against it without touching a document.",
+
+  "baseUrls": {
+    "live": "https://sheets.googleapis.com"
+  },
+
+  "encoding": "json",
+
+  "credentialFields": [
+    {
+      "key": "clientId",
+      "label": "OAuth client ID",
+      "scope": "provider",
+      "secret": false,
+      "help": "From Google Cloud Console -> APIs & Services -> Credentials. ONE value for the whole installation, not per connected account."
+    },
+    {
+      "key": "clientSecret",
+      "label": "OAuth client secret",
+      "scope": "provider",
+      "secret": true,
+      "help": "The client secret for the same OAuth app. One value for the whole installation."
+    },
+    {
+      "key": "accessToken",
+      "label": "Access token",
+      "scope": "account",
+      "secret": true,
+      "help": "Per connected Google account, and it expires after ONE HOUR. The host refreshes it with the refresh token."
+    },
+    {
+      "key": "refreshToken",
+      "label": "Refresh token",
+      "scope": "account",
+      "secret": true,
+      "help": "Per connected Google account. Google issues one only when the consent request asks for offline access; without it the connection dies within the hour."
+    }
+  ]
+}

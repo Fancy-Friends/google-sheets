@@ -1,0 +1,22 @@
+{
+  "$comment": "AppendValuesResponse, read from Google's discovery document: spreadsheetId, tableRange, and an updates object carrying the ranges and counts. Reproduced rather than flattened, because an author who wires {{ $json.data.updates.updatedRows }} against the fake must find the same path when a real append arrives.",
+  "operation": "row_append",
+
+  "values": {
+    "$comment": "Drawn once. The spreadsheet id is echoed at the top level AND inside updates.updatedRange's sibling fields, and two draws would produce a response describing two different documents.",
+    "spreadsheetId": { "$config": "spreadsheetId", "as": "string", "fallback": { "$fake": "id", "prefix": "1Sheet" } }
+  },
+
+  "response": {
+    "spreadsheetId": { "$ref": "spreadsheetId" },
+    "tableRange": "Sheet1!A1:D4",
+    "updates": {
+      "spreadsheetId": { "$ref": "spreadsheetId" },
+      "updatedRange": "Sheet1!A5:D5",
+      "updatedRows": 1,
+      "updatedColumns": 4,
+      "updatedCells": 4,
+      "$rangeComment": "updatedRange is DIFFERENT from the range that was asked for -- append finds the first empty row below it and reports where it actually wrote. A faker that echoed the requested range would teach the wrong thing about the one field most worth reading."
+    }
+  }
+}

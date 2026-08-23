@@ -1,0 +1,92 @@
+{
+  "$comment": "Read from Google's own discovery document, not docs prose: spreadsheets.values.append -> POST v4/spreadsheets/{spreadsheetId}/values/{range}:append, request ValueRange, response AppendValuesResponse.",
+  "operation": "row_append",
+  "kind": "row",
+  "title": "Google Sheets row",
+  "description": "Append a row to a Google Sheet.",
+  "summary": "append a row",
+  "docs": "https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.values/append",
+  "sideEffects": "unsafe-to-replay",
+
+  "$idempotencyComment": "Google offers no idempotency key on values.append -- there is no header and no parameter for one in the discovery document. So this is honestly unsafe-to-replay with no way to make it safe: a retried durable run appends a SECOND row. Saying so is better than implying a guarantee the API cannot give.",
+
+  "request": {
+    "method": "POST",
+    "path": "/v4/spreadsheets/{spreadsheetId}/values/{range}:append",
+    "encoding": "json",
+    "$pathComment": "TWO config values in the URL, which no provider before Google needed. The `:append` suffix is part of the path, not a placeholder -- Google's custom-method syntax."
+  },
+
+  "config": [
+    {
+      "type": "text",
+      "key": "spreadsheetId",
+      "label": "Spreadsheet ID",
+      "required": true,
+      "description": "The long id from the sheet's URL: docs.google.com/spreadsheets/d/THIS_PART/edit.",
+      "send": { "in": "path", "as": "spreadsheetId", "value": "string" }
+    },
+    {
+      "type": "text",
+      "key": "range",
+      "label": "Range",
+      "required": true,
+      "default": "Sheet1!A:Z",
+      "description": "Where to append, in A1 notation. Google finds the last row of this range and writes below it.",
+      "send": { "in": "path", "as": "range", "value": "string" },
+      "$comment": "A range contains `!` and can contain spaces, and a sheet named `Q1/Q2` contains a SLASH. Interpolated raw it changes which URL is called, and Google answers 404 about a spreadsheet rather than about encoding. Every emitter URL-encodes this, and a test asserts it in all three runtimes."
+    },
+    {
+      "type": "text",
+      "key": "values",
+      "label": "Row values",
+      "required": true,
+      "description": "The cells of the row, comma separated. Left to right from the start of the range.",
+      "send": {
+        "in": "body",
+        "as": "values",
+        "value": "list",
+        "separator": ",",
+        "encoding": "rows",
+        "$comment": "encoding `rows`, not `array`. Google's ValueRange.values is an array of ARRAYS -- the outer list is rows and the inner one is cells. A flat array is rejected as the wrong type, and a single row has to be wrapped: [[a, b, c]]."
+      }
+    },
+    {
+      "type": "select",
+      "key": "valueInputOption",
+      "label": "How to interpret the values",
+      "default": "USER_ENTERED",
+      "description": "USER_ENTERED parses the cells the way typing them would -- so =SUM(A1:A2) becomes a formula and 1/2/26 becomes a date. RAW stores exactly the characters given.",
+      "options": [
+        { "value": "USER_ENTERED", "label": "As if typed (formulas and dates parsed)" },
+        { "value": "RAW", "label": "Exactly as given" }
+      ],
+      "send": { "in": "query", "as": "valueInputOption", "value": "string" },
+      "$comment": "In the QUERY of a POST, which the derived slot could not express. Sent in the body Google ignores it silently and defaults to RAW -- so an author who asked for formulas gets text that looks like a formula and never calculates. The discovery document lists a third enum value, INPUT_VALUE_OPTION_UNSPECIFIED, which is a protobuf artefact nobody would choose; it is deliberately not offered."
+    },
+    {
+      "type": "select",
+      "key": "insertDataOption",
+      "label": "When the range already has data below",
+      "default": "INSERT_ROWS",
+      "description": "INSERT_ROWS pushes existing rows down. OVERWRITE writes into them.",
+      "options": [
+        { "value": "INSERT_ROWS", "label": "Insert new rows" },
+        { "value": "OVERWRITE", "label": "Overwrite what is there" }
+      ],
+      "send": { "in": "query", "as": "insertDataOption", "value": "string" }
+    }
+  ],
+
+  "outputShape": [
+    { "path": "data.spreadsheetId", "type": "string", "description": "The spreadsheet that was written to." },
+    { "path": "data.updates.updatedRange", "type": "string", "description": "The range Google actually wrote, in A1 notation. NOT the range that was asked for -- append finds the first empty row below it." },
+    { "path": "data.updates.updatedRows", "type": "number", "description": "How many rows were added." },
+    { "path": "data.updates.updatedCells", "type": "number", "description": "How many cells were written." }
+  ],
+
+  "contract": {
+    "sends": ["spreadsheetId", "range", "valueInputOption", "insertDataOption", "values"],
+    "reads": ["spreadsheetId", "updates"]
+  }
+}
