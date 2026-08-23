@@ -5,7 +5,7 @@
   "connectorApi": 1,
   "files": {
     ".gitattributes": "3b81cb009a60ff7f0762f24c5d336a4afd0284f2716e54c4823da08d839f664c",
-    ".github/workflows/ci.yml": "b8971485cfdba4f415252c4d249743224ff442fc50e89872fc4703edc5f6fe1b",
+    ".github/workflows/ci.yml": "e952727e315e50916c81c15fc13af810956cf25b06eab261d9d3ed0caeba9f4f",
     ".github/workflows/publish.yml": "aff7a87a5ab97b007ec20cab56fd11c5d49e0ba050aff7ea9f8e68bc015f1b95",
     ".github/workflows/verify-published.yml": "13522468bd1f10c4cca7d301d509af9194005d0221baf778821eba9b75b76803",
     ".gitignore": "47a7633c70c1d1e6b3c17a782a105355accfb3495d6402f7f308256bf505e1ad",
