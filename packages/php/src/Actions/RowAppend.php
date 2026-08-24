@@ -40,9 +40,14 @@ final class RowAppend
      * later as an "invalid request" from Google Sheets.
      *
      * @param array<string,mixed> $config
-     * @return array<string,scalar>
+     * An EMPTY body is `{}`, not `[]` — and PHP cannot tell those apart, because
+     * both are `array()` and `json_encode` picks the list. So an empty one is
+     * returned as an object. TypeScript and Python have no such ambiguity, which
+     * is why this is a difference only the byte-parity suite can see.
+     *
+     * @return array<string,mixed>|\stdClass
      */
-    public static function body(array $config): array
+    public static function body(array $config): array|\stdClass
     {
         if (($config['spreadsheetId'] ?? null) === null || ($config['spreadsheetId'] ?? null) === '') {
             throw new ConnectorConfigException('row_append: "spreadsheetId" is required (Spreadsheet ID).');
@@ -61,6 +66,7 @@ final class RowAppend
         $value = $config['values'] ?? null;
         $body['values'] = [self::valuesList($config['values'] ?? null)];
 
+        $body = $body === [] ? new \stdClass() : $body;
         return $body;
     }
 
@@ -87,9 +93,9 @@ final class RowAppend
      * own default — so the request succeeds and does the wrong thing.
      *
      * @param array<string,mixed> $config
-     * @return array<string,scalar>
+     * @return array<string,mixed>|\stdClass
      */
-    public static function query(array $config): array
+    public static function query(array $config): array|\stdClass
     {
         $body = [];
 
@@ -103,6 +109,7 @@ final class RowAppend
             $body['insertDataOption'] = (string) $value;
         }
 
+        $body = $body === [] ? new \stdClass() : $body;
         return $body;
     }
 
