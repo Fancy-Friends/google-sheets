@@ -55,7 +55,7 @@
     "packages/ui/package.json": "94c6c74179789b3d9173fb0d3ee08b3d8d6c03ea05a2b3e645cec957cfbc17b3",
     "packages/ui/src/index.ts": "1c8691468c6a7d185170531e470e60f96f57ae6ed33123ccde4d0d7d32e67a75",
     "packages/ui/src/kinds/row-append.ts": "10cb9af0731ef604724ef946c17a8912b6e19175c7bd3872989043c9c0c2b18f",
-    "packages/ui/src/service.ts": "03fc89e4607438f276a4ab701abe88b8a9eae4570b35caf811f35315e7fad64f",
+    "packages/ui/src/service.ts": "18e99af398aa3f416b14fae37dbcc109dbf27a1a00e168853092544e20eae03b",
     "packages/ui/tests/kinds.test.ts": "98f510ac7afd98c6e7adbdd2132551d71c9be25247c469a7f782241ea2c2c2e0",
     "packages/ui/tsconfig.json": "2cdc4c3b504406aa9553ffad3d936061d66be410030ac3571f0fc81d737d6875",
     "packages/ui/tsup.config.ts": "4067a7f50c1fbbc3c25addab30d28ccada74cc2f80f1b23aecbdc85a3fa50bc0",
