@@ -48,7 +48,7 @@ final class GoogleSheetsFaker
     }
 
     /** @param array<string,mixed> $config */
-    private static function RowAppend(array $config, mixed $fake): array
+    private static function RowAppend(array $config, mixed $fake): array|\stdClass
     {
         $boundSpreadsheetid = ((($v = $config['spreadsheetId'] ?? null) !== null && $v !== '') ? (string) $v : $fake->id('1Sheet'));
 
