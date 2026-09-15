@@ -48,7 +48,7 @@
     "packages/py/pyproject.toml": "e25477880e18ae17847a021bb787621abd5d4a3cef1acd69de19f15350924dcd",
     "packages/py/src/fancy_google_sheets/__init__.py": "26e8db8159be6494687c003d9330ed29580d9627ddb9e5ae1a921a64e011b991",
     "packages/py/src/fancy_google_sheets/_fake.py": "ad090c4aeda9f6453bf1d90d999df714f8bddd5523cad193e5f0b24b359db326",
-    "packages/py/src/fancy_google_sheets/_runtime.py": "dcaff7003502bba2e414228ce8cd68a387e53999abfe26a5253de445f079a268",
+    "packages/py/src/fancy_google_sheets/_runtime.py": "348301409008fb3c172fd44c7457eb3619c618a2eb6b0d4b530ab97be365cf53",
     "packages/py/src/fancy_google_sheets/actions/__init__.py": "0600f45e56d97af1eccfa3312c30d9affb6064c8c958e54e75cb4e2c15902dd8",
     "packages/py/src/fancy_google_sheets/actions/row_append.py": "6f00095bdb2e1db0ad578c42f5c6b42b0f55cc749e0b6f9dede9d7f57dbc632e",
     "packages/py/src/fancy_google_sheets/faker.py": "97e5d5913e183dbc2165465977bde4155e6579833c5332db4177c5503bbeb810",
