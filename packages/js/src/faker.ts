@@ -40,10 +40,47 @@ function fakeRowAppend({ config, fake }: FakeRequest): unknown {
   };
 }
 
+function fakeValuesGet({ config, fake }: FakeRequest): unknown {
+  return {
+    "range": (config.range !== undefined && config.range !== null && config.range !== "" ? String(config.range) : "Sheet1!A1:C2"),
+    "majorDimension": (config.majorDimension !== undefined && config.majorDimension !== null && config.majorDimension !== "" ? String(config.majorDimension) : "ROWS"),
+    "values": [
+      [
+        "Name",
+        "Email",
+        "Status",
+      ],
+      [
+        "Ada Lovelace",
+        "ada@example.test",
+        "Active",
+      ],
+    ],
+  };
+}
+
+function fakeValuesUpdate({ config, fake }: FakeRequest): unknown {
+  const boundSpreadsheetid = (config.spreadsheetId !== undefined && config.spreadsheetId !== null && config.spreadsheetId !== "" ? String(config.spreadsheetId) : fake.id("1Sheet"));
+
+  return {
+    "spreadsheetId": boundSpreadsheetid,
+    "updatedRange": (config.range !== undefined && config.range !== null && config.range !== "" ? String(config.range) : "Sheet1!A1"),
+    "updatedRows": 1,
+    "updatedColumns": 3,
+    "updatedCells": 3,
+  };
+}
+
 export const googleSheetsFaker: ConnectorFaker = (operation, request) => {
   switch (operation) {
     case "row_append":
       return fakeRowAppend(request);
+
+    case "values_get":
+      return fakeValuesGet(request);
+
+    case "values_update":
+      return fakeValuesUpdate(request);
 
     default:
       // A faker asked for an operation it has no shape for must SAY so. Making

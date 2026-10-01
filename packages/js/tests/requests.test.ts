@@ -22,6 +22,8 @@ import assert from "node:assert/strict";
 import type { PreparedRequest } from "@particle-academy/fancy-connector-core";
 
 import { googleSheetsRowAppend } from "../src/actions/row-append.js";
+import { googleSheetsValuesGet } from "../src/actions/values-get.js";
+import { googleSheetsValuesUpdate } from "../src/actions/values-update.js";
 
 /** Capture the prepared request instead of sending it. */
 function capture() {
@@ -63,6 +65,63 @@ test("row_append sends POST /v4/spreadsheets/{spreadsheetId}/values/{range}:appe
   assert.equal(seen.length, 1);
   assert.equal(seen[0]!.method, "POST");
   assert.ok(new URL(seen[0]!.url).pathname.endsWith("/v4/spreadsheets/example-spreadsheetId/values/example-range:append"), seen[0]!.url);
+
+  assert.deepEqual(JSON.parse(String(seen[0]!.body ?? "{}")), {
+    "values": [
+      [
+        "values-one",
+        "values-two"
+      ]
+    ]
+  });
+});
+
+test("values_get sends GET /v4/spreadsheets/{spreadsheetId}/values/{range}", async () => {
+  const { seen, transport } = capture();
+
+  await googleSheetsValuesGet({
+    config: {
+      "spreadsheetId": "example-spreadsheetId",
+      "range": "example-range",
+      "valueRenderOption": "FORMATTED_VALUE",
+      "majorDimension": "ROWS"
+    },
+    credentials: CREDENTIALS,
+    mode: "live",
+    transport,
+  });
+
+  assert.equal(seen.length, 1);
+  assert.equal(seen[0]!.method, "GET");
+  assert.ok(new URL(seen[0]!.url).pathname.endsWith("/v4/spreadsheets/example-spreadsheetId/values/example-range"), seen[0]!.url);
+
+  assert.deepEqual(
+    Object.fromEntries(new URL(seen[0]!.url).searchParams),
+    {
+      "valueRenderOption": "FORMATTED_VALUE",
+      "majorDimension": "ROWS"
+    },
+  );
+});
+
+test("values_update sends PUT /v4/spreadsheets/{spreadsheetId}/values/{range}", async () => {
+  const { seen, transport } = capture();
+
+  await googleSheetsValuesUpdate({
+    config: {
+      "spreadsheetId": "example-spreadsheetId",
+      "range": "example-range",
+      "values": "values-one, values-two",
+      "valueInputOption": "USER_ENTERED"
+    },
+    credentials: CREDENTIALS,
+    mode: "live",
+    transport,
+  });
+
+  assert.equal(seen.length, 1);
+  assert.equal(seen[0]!.method, "PUT");
+  assert.ok(new URL(seen[0]!.url).pathname.endsWith("/v4/spreadsheets/example-spreadsheetId/values/example-range"), seen[0]!.url);
 
   assert.deepEqual(JSON.parse(String(seen[0]!.body ?? "{}")), {
     "values": [

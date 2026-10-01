@@ -49,6 +49,57 @@ it('row_append fakes the shape Google Sheets publishes', function () {
     ]);
 });
 
+it('values_get fakes the shape Google Sheets publishes', function () {
+    $config = [];
+    $fake = new FakeValues(FakeValues::seedForCall('google_sheets', 'values_get', $config));
+
+    $faked = GoogleSheetsFaker::respond('values_get', ['config' => $config, 'fake' => $fake]);
+
+    // Through JSON and back, because a faked EMPTY object is a stdClass — the only
+    // PHP value that spells `{}` on the wire — and `toBe` compares objects by
+    // identity. This asserts the VALUES; the `{}`-versus-`[]` spelling is what
+    // weaver's cross-runtime parity suite asserts, byte for byte.
+    $faked = json_decode((string) json_encode($faked), true, 512, JSON_THROW_ON_ERROR);
+
+    expect($faked)->toBe([
+        'range' => 'Sheet1!A1:C2',
+        'majorDimension' => 'ROWS',
+        'values' => [
+            [
+                'Name',
+                'Email',
+                'Status',
+            ],
+            [
+                'Ada Lovelace',
+                'ada@example.test',
+                'Active',
+            ],
+        ],
+    ]);
+});
+
+it('values_update fakes the shape Google Sheets publishes', function () {
+    $config = [];
+    $fake = new FakeValues(FakeValues::seedForCall('google_sheets', 'values_update', $config));
+
+    $faked = GoogleSheetsFaker::respond('values_update', ['config' => $config, 'fake' => $fake]);
+
+    // Through JSON and back, because a faked EMPTY object is a stdClass — the only
+    // PHP value that spells `{}` on the wire — and `toBe` compares objects by
+    // identity. This asserts the VALUES; the `{}`-versus-`[]` spelling is what
+    // weaver's cross-runtime parity suite asserts, byte for byte.
+    $faked = json_decode((string) json_encode($faked), true, 512, JSON_THROW_ON_ERROR);
+
+    expect($faked)->toBe([
+        'spreadsheetId' => '1Sheet_fake_64ecbb208290',
+        'updatedRange' => 'Sheet1!A1',
+        'updatedRows' => 1,
+        'updatedColumns' => 3,
+        'updatedCells' => 3,
+    ]);
+});
+
 it('throws for an operation with no fixture rather than inventing a shape', function () {
     $fake = new FakeValues(FakeValues::seedForCall('google_sheets', 'no_such_operation', []));
 

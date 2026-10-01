@@ -1,0 +1,71 @@
+{
+  "$comment": "spreadsheets.values.update -> PUT v4/spreadsheets/{spreadsheetId}/values/{range}, request+response ValueRange/UpdateValuesResponse. Read from Google's own discovery document 2026-10-01. Unlike row_append (values.append, which finds the next empty row below a range and never touches existing cells), update OVERWRITES exactly the cells inside the given range -- said plainly, since the two actions sound alike and do different things to data already there.",
+  "operation": "values_update",
+  "kind": "values_update",
+  "title": "Write Google Sheets values",
+  "description": "Overwrite the cell values of a range. Existing values in that range are replaced, not pushed down.",
+  "summary": "write a range",
+  "docs": "https://developers.google.com/workspace/sheets/api/reference/rest/v4/spreadsheets.values/update",
+  "sideEffects": "idempotent",
+  "$sideEffectsComment": "Re-sending the same values to the same range leaves the sheet in the same state both times -- unlike row_append, nothing is pushed down or duplicated by a retry.",
+
+  "request": {
+    "method": "PUT",
+    "path": "/v4/spreadsheets/{spreadsheetId}/values/{range}",
+    "encoding": "json"
+  },
+
+  "config": [
+    {
+      "type": "text",
+      "key": "spreadsheetId",
+      "label": "Spreadsheet ID",
+      "required": true,
+      "send": { "in": "path", "as": "spreadsheetId", "value": "string" }
+    },
+    {
+      "type": "text",
+      "key": "range",
+      "label": "Range",
+      "required": true,
+      "default": "Sheet1!A1",
+      "description": "In A1 notation. The values written fill this range from its top-left cell -- more rows or columns than the range covers are written anyway, following Google's own documented behavior; fewer leave the rest of the range untouched.",
+      "send": { "in": "path", "as": "range", "value": "string" }
+    },
+    {
+      "type": "text",
+      "key": "values",
+      "label": "Row values",
+      "required": true,
+      "description": "The cells to write, comma separated, left to right, one row. For more than one row, call this action once per row.",
+      "send": { "in": "body", "as": "values", "value": "list", "separator": ",", "encoding": "rows" }
+    },
+    {
+      "type": "select",
+      "key": "valueInputOption",
+      "label": "How to interpret the values",
+      "required": true,
+      "default": "USER_ENTERED",
+      "description": "USER_ENTERED parses the cells the way typing them would -- so =SUM(A1:A2) becomes a formula. RAW stores exactly the characters given.",
+      "options": [
+        { "value": "USER_ENTERED", "label": "As if typed (formulas and dates parsed)" },
+        { "value": "RAW", "label": "Exactly as given" }
+      ],
+      "send": { "in": "query", "as": "valueInputOption", "value": "string" }
+    }
+  ],
+
+  "outputShape": [
+    { "path": "data.spreadsheetId", "type": "string", "description": "The spreadsheet that was written to." },
+    { "path": "data.updatedRange", "type": "string", "description": "The range Google actually wrote, in A1 notation." },
+    { "path": "data.updatedRows", "type": "number", "description": "How many rows had at least one cell updated." },
+    { "path": "data.updatedColumns", "type": "number", "description": "How many columns had at least one cell updated." },
+    { "path": "data.updatedCells", "type": "number", "description": "How many cells were written." },
+    { "path": "mode", "type": "string", "description": "Which estate this ran against. Google has no sandbox, so: fake or live." }
+  ],
+
+  "contract": {
+    "sends": ["spreadsheetId", "range", "values", "valueInputOption"],
+    "reads": ["spreadsheetId", "updatedRange", "updatedRows", "updatedColumns", "updatedCells"]
+  }
+}

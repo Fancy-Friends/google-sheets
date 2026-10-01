@@ -36,6 +36,8 @@ final class GoogleSheetsFaker
 
         return match ($operation) {
             'row_append' => self::RowAppend($config, $fake),
+            'values_get' => self::ValuesGet($config, $fake),
+            'values_update' => self::ValuesUpdate($config, $fake),
             default => throw new \InvalidArgumentException(
                 // A faker asked for an operation it has no shape for must SAY so.
                 // Making something up would produce a green run whose output
@@ -62,6 +64,41 @@ final class GoogleSheetsFaker
             'updatedColumns' => 4,
             'updatedCells' => 4,
         ],
+    ];
+    }
+
+    /** @param array<string,mixed> $config */
+    private static function ValuesGet(array $config, mixed $fake): array|\stdClass
+    {
+        return [
+        'range' => ((($v = $config['range'] ?? null) !== null && $v !== '') ? (string) $v : 'Sheet1!A1:C2'),
+        'majorDimension' => ((($v = $config['majorDimension'] ?? null) !== null && $v !== '') ? (string) $v : 'ROWS'),
+        'values' => [
+            [
+                'Name',
+                'Email',
+                'Status',
+            ],
+            [
+                'Ada Lovelace',
+                'ada@example.test',
+                'Active',
+            ],
+        ],
+    ];
+    }
+
+    /** @param array<string,mixed> $config */
+    private static function ValuesUpdate(array $config, mixed $fake): array|\stdClass
+    {
+        $boundSpreadsheetid = ((($v = $config['spreadsheetId'] ?? null) !== null && $v !== '') ? (string) $v : $fake->id('1Sheet'));
+
+        return [
+        'spreadsheetId' => $boundSpreadsheetid,
+        'updatedRange' => ((($v = $config['range'] ?? null) !== null && $v !== '') ? (string) $v : 'Sheet1!A1'),
+        'updatedRows' => 1,
+        'updatedColumns' => 3,
+        'updatedCells' => 3,
     ];
     }
 }

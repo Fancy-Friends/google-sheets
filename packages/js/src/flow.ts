@@ -30,9 +30,13 @@ import { GOOGLE_SHEETS } from "./service.js";
 
 import {
   googleSheetsRowKind,
+  googleSheetsValuesGetKind,
+  googleSheetsValuesUpdateKind,
 } from "@particle-academy/google-sheets-ui";
 
 import { googleSheetsRowAppend } from "./actions/row-append.js";
+import { googleSheetsValuesGet } from "./actions/values-get.js";
+import { googleSheetsValuesUpdate } from "./actions/values-update.js";
 
 export const googleSheetsRowExecutor: NodeExecutor = async (ctx) => {
   const config = ((ctx.node.data as { config?: Record<string, unknown> })?.config ?? {});
@@ -52,7 +56,45 @@ export const googleSheetsRowExecutor: NodeExecutor = async (ctx) => {
   return { __port: "out", value: result };
 };
 
+export const googleSheetsValuesGetExecutor: NodeExecutor = async (ctx) => {
+  const config = ((ctx.node.data as { config?: Record<string, unknown> })?.config ?? {});
+
+  const result = await googleSheetsValuesGet({
+    config,
+    input: ctx.inputs?.in,
+  });
+
+  ctx.emit({
+    type: "log",
+    level: "info",
+    nodeId: ctx.node.id,
+    message: `google_sheets values_get ${(result.data as { id?: string })?.id} (${result.mode})`,
+  });
+
+  return { __port: "out", value: result };
+};
+
+export const googleSheetsValuesUpdateExecutor: NodeExecutor = async (ctx) => {
+  const config = ((ctx.node.data as { config?: Record<string, unknown> })?.config ?? {});
+
+  const result = await googleSheetsValuesUpdate({
+    config,
+    input: ctx.inputs?.in,
+  });
+
+  ctx.emit({
+    type: "log",
+    level: "info",
+    nodeId: ctx.node.id,
+    message: `google_sheets values_update ${(result.data as { id?: string })?.id} (${result.mode})`,
+  });
+
+  return { __port: "out", value: result };
+};
+
 /** The kinds a TypeScript host registers. */
 export const GOOGLE_SHEETS_RUNNABLE_KINDS: NodeKindDefinition[] = [
   { ...googleSheetsRowKind, executor: googleSheetsRowExecutor },
+  { ...googleSheetsValuesGetKind, executor: googleSheetsValuesGetExecutor },
+  { ...googleSheetsValuesUpdateKind, executor: googleSheetsValuesUpdateExecutor },
 ];

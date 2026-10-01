@@ -56,6 +56,53 @@ def _row_append(config: dict[str, Any], fake: FakeValues) -> Any:
     }
 
 
+def _values_get(config: dict[str, Any], fake: FakeValues) -> Any:
+    return {
+        "range": (
+            str(_v)
+            if (_v := config.get("range")) is not None and _v != ""
+            else "Sheet1!A1:C2"
+        ),
+        "majorDimension": (
+            str(_v)
+            if (_v := config.get("majorDimension")) is not None and _v != ""
+            else "ROWS"
+        ),
+        "values": [
+            [
+                "Name",
+                "Email",
+                "Status",
+            ],
+            [
+                "Ada Lovelace",
+                "ada@example.test",
+                "Active",
+            ],
+        ],
+    }
+
+
+def _values_update(config: dict[str, Any], fake: FakeValues) -> Any:
+    bound_spreadsheetid = (
+        str(_v)
+        if (_v := config.get("spreadsheetId")) is not None and _v != ""
+        else fake.id("1Sheet")
+    )
+
+    return {
+        "spreadsheetId": bound_spreadsheetid,
+        "updatedRange": (
+            str(_v)
+            if (_v := config.get("range")) is not None and _v != ""
+            else "Sheet1!A1"
+        ),
+        "updatedRows": 1,
+        "updatedColumns": 3,
+        "updatedCells": 3,
+    }
+
+
 def respond(operation: str, request: dict[str, Any]) -> Any:
     """Dispatch to the fixture for one operation."""
     config: dict[str, Any] = request.get("config") or {}
@@ -63,6 +110,12 @@ def respond(operation: str, request: dict[str, Any]) -> Any:
 
     if operation == "row_append":
         return _row_append(config, fake)
+
+    if operation == "values_get":
+        return _values_get(config, fake)
+
+    if operation == "values_update":
+        return _values_update(config, fake)
 
     # A faker asked for an operation it has no shape for must SAY so. Making
     # something up would produce a green run whose output silently has none of

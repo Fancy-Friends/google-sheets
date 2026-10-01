@@ -40,6 +40,8 @@ final class GoogleSheetsFlow
     /** @var list<class-string> */
     public const EXECUTORS = [
         RowExecutor::class,
+        ValuesGetExecutor::class,
+        ValuesUpdateExecutor::class,
     ];
 
     /**

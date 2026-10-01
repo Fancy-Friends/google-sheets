@@ -1,0 +1,16 @@
+{
+  "$comment": "UpdateValuesResponse, read from Google's discovery document. updatedRange echoes the range that was asked for -- unlike append, update writes exactly where it was told, never a different range Google computed.",
+  "operation": "values_update",
+
+  "values": {
+    "spreadsheetId": { "$config": "spreadsheetId", "as": "string", "fallback": { "$fake": "id", "prefix": "1Sheet" } }
+  },
+
+  "response": {
+    "spreadsheetId": { "$ref": "spreadsheetId" },
+    "updatedRange": { "$config": "range", "as": "string", "fallback": "Sheet1!A1" },
+    "updatedRows": 1,
+    "updatedColumns": 3,
+    "updatedCells": 3
+  }
+}

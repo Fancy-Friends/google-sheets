@@ -30,6 +30,37 @@ GOLDENS = [
             },
         },
     },
+    {
+        "operation": "values_get",
+        "config": {},
+        "expected": {
+            "range": "Sheet1!A1:C2",
+            "majorDimension": "ROWS",
+            "values": [
+                [
+                    "Name",
+                    "Email",
+                    "Status",
+                ],
+                [
+                    "Ada Lovelace",
+                    "ada@example.test",
+                    "Active",
+                ],
+            ],
+        },
+    },
+    {
+        "operation": "values_update",
+        "config": {},
+        "expected": {
+            "spreadsheetId": "1Sheet_fake_64ecbb208290",
+            "updatedRange": "Sheet1!A1",
+            "updatedRows": 1,
+            "updatedColumns": 3,
+            "updatedCells": 3,
+        },
+    },
 ]
 
 

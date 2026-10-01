@@ -81,6 +81,32 @@ Append a row to a Google Sheet.
 | `valueInputOption` | no | USER_ENTERED parses the cells the way typing them would -- so =SUM(A1:A2) becomes a formula and 1/2/26 becomes a date. RAW stores exactly the characters given. |
 | `insertDataOption` | no | INSERT_ROWS pushes existing rows down. OVERWRITE writes into them. |
 
+#### `values_get` — Read Google Sheets values
+
+Read the cell values of a range.
+
+`GET /v4/spreadsheets/{spreadsheetId}/values/{range}` · reads only — safe to replay
+
+| Input | Required | What it is |
+|---|---|---|
+| `spreadsheetId` | yes | The long id from the sheet's URL: docs.google.com/spreadsheets/d/THIS_PART/edit. |
+| `range` | yes | In A1 notation, the same shape row_append accepts. |
+| `valueRenderOption` | no | How to render values |
+| `majorDimension` | no | Whether the outer array of the result is rows or columns. |
+
+#### `values_update` — Write Google Sheets values
+
+Overwrite the cell values of a range. Existing values in that range are replaced, not pushed down.
+
+`PUT /v4/spreadsheets/{spreadsheetId}/values/{range}` · idempotent — safe to replay
+
+| Input | Required | What it is |
+|---|---|---|
+| `spreadsheetId` | yes | Spreadsheet ID |
+| `range` | yes | In A1 notation. The values written fill this range from its top-left cell -- more rows or columns than the range covers are written anyway, following Google's own documented behavior; fewer leave the rest of the range untouched. |
+| `values` | yes | The cells to write, comma separated, left to right, one row. For more than one row, call this action once per row. |
+| `valueInputOption` | yes | USER_ENTERED parses the cells the way typing them would -- so =SUM(A1:A2) becomes a formula. RAW stores exactly the characters given. |
+
 ## Run it before you have credentials
 
 Every operation ships a **faker**, whether or not Google Sheets has a sandbox. Set a

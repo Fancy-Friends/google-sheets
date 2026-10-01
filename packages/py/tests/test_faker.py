@@ -40,6 +40,45 @@ def test_row_append_fakes_the_published_shape() -> None:
     }
 
 
+def test_values_get_fakes_the_published_shape() -> None:
+    config = {}
+    fake = FakeValues(seed_for_call("google_sheets", "values_get", config))
+
+    faked = respond("values_get", {"config": config, "fake": fake})
+
+    assert faked == {
+        "range": "Sheet1!A1:C2",
+        "majorDimension": "ROWS",
+        "values": [
+            [
+                "Name",
+                "Email",
+                "Status",
+            ],
+            [
+                "Ada Lovelace",
+                "ada@example.test",
+                "Active",
+            ],
+        ],
+    }
+
+
+def test_values_update_fakes_the_published_shape() -> None:
+    config = {}
+    fake = FakeValues(seed_for_call("google_sheets", "values_update", config))
+
+    faked = respond("values_update", {"config": config, "fake": fake})
+
+    assert faked == {
+        "spreadsheetId": "1Sheet_fake_64ecbb208290",
+        "updatedRange": "Sheet1!A1",
+        "updatedRows": 1,
+        "updatedColumns": 3,
+        "updatedCells": 3,
+    }
+
+
 def test_an_operation_with_no_fixture_raises_rather_than_inventing_a_shape() -> None:
     fake = FakeValues(seed_for_call("google_sheets", "no_such_operation", {}))
 

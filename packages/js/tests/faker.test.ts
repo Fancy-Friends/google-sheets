@@ -43,6 +43,43 @@ test("row_append fakes the shape Google Sheets publishes", () => {
   });
 });
 
+test("values_get fakes the shape Google Sheets publishes", () => {
+  const config = {};
+
+  const faked = googleSheetsFaker("values_get", fakeRequest("google_sheets", "values_get", config));
+
+  assert.deepEqual(faked, {
+    "range": "Sheet1!A1:C2",
+    "majorDimension": "ROWS",
+    "values": [
+      [
+        "Name",
+        "Email",
+        "Status"
+      ],
+      [
+        "Ada Lovelace",
+        "ada@example.test",
+        "Active"
+      ]
+    ]
+  });
+});
+
+test("values_update fakes the shape Google Sheets publishes", () => {
+  const config = {};
+
+  const faked = googleSheetsFaker("values_update", fakeRequest("google_sheets", "values_update", config));
+
+  assert.deepEqual(faked, {
+    "spreadsheetId": "1Sheet_fake_64ecbb208290",
+    "updatedRange": "Sheet1!A1",
+    "updatedRows": 1,
+    "updatedColumns": 3,
+    "updatedCells": 3
+  });
+});
+
 test("an operation with no fixture throws rather than inventing a shape", () => {
   assert.throws(() => googleSheetsFaker("no_such_operation", fakeRequest("google_sheets", "no_such_operation", {})), /no fake response/);
 });

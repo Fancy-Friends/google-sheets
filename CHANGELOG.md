@@ -8,6 +8,18 @@ The four packages share one version, because they are generated from one
 `provider/` definition and a version that meant something different in each
 would be a version nobody could reason about.
 
+## [0.4.0] — 2026-10-01
+
+### Added
+
+- **`values_get`** and **`values_update`** — read a range, and overwrite
+  one. No scope change: this connector already holds the full
+  `spreadsheets` scope `row_append` needed. `values_update` OVERWRITES
+  the cells inside the given range; it does not push existing rows down
+  or search for the next empty row the way `row_append` (`values.append`)
+  does — the two sound alike and behave differently on data already
+  there, said plainly in both actions' own descriptions.
+
 ## [0.3.4] — 2026-09-12
 
 ### Changed

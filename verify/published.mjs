@@ -56,6 +56,37 @@ const GOLDENS = [
         "updatedCells": 4
       }
     }
+  },
+  {
+    "operation": "values_get",
+    "config": {},
+    "expected": {
+      "range": "Sheet1!A1:C2",
+      "majorDimension": "ROWS",
+      "values": [
+        [
+          "Name",
+          "Email",
+          "Status"
+        ],
+        [
+          "Ada Lovelace",
+          "ada@example.test",
+          "Active"
+        ]
+      ]
+    }
+  },
+  {
+    "operation": "values_update",
+    "config": {},
+    "expected": {
+      "spreadsheetId": "1Sheet_fake_64ecbb208290",
+      "updatedRange": "Sheet1!A1",
+      "updatedRows": 1,
+      "updatedColumns": 3,
+      "updatedCells": 3
+    }
   }
 ];
 
@@ -72,7 +103,7 @@ for (const { operation, config, expected } of GOLDENS) {
 
 // The ui package is a separate tarball, and js depends on it by its
 // published name — so this also proves that dependency resolves.
-assert.equal(GOOGLE_SHEETS_KINDS.length, 1);
+assert.equal(GOOGLE_SHEETS_KINDS.length, 3);
 for (const kind of GOOGLE_SHEETS_KINDS) {
   const keys = kind.configSchema.map((field) => field.key);
   assert.equal(keys[0], "connection");

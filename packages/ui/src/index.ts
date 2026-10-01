@@ -19,11 +19,17 @@
 
 export * from "./service.js";
 export * from "./kinds/row-append.js";
+export * from "./kinds/values-get.js";
+export * from "./kinds/values-update.js";
 
 import type { NodeKindDefinition } from "@particle-academy/fancy-flow/engine";
 import { googleSheetsRowKind } from "./kinds/row-append.js";
+import { googleSheetsValuesGetKind } from "./kinds/values-get.js";
+import { googleSheetsValuesUpdateKind } from "./kinds/values-update.js";
 
 /** Every Google Sheets kind, for a host that registers the lot. */
 export const GOOGLE_SHEETS_KINDS: NodeKindDefinition[] = [
   googleSheetsRowKind,
+  googleSheetsValuesGetKind,
+  googleSheetsValuesUpdateKind,
 ];

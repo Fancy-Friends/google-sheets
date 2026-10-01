@@ -1,0 +1,13 @@
+{
+  "$comment": "Two rows and three columns, echoing the range that was asked for -- read, unlike append, returns exactly the range covered rather than a different one Google computed.",
+  "operation": "values_get",
+
+  "response": {
+    "range": { "$config": "range", "as": "string", "fallback": "Sheet1!A1:C2" },
+    "majorDimension": { "$config": "majorDimension", "as": "string", "default": "ROWS" },
+    "values": [
+      ["Name", "Email", "Status"],
+      ["Ada Lovelace", "ada@example.test", "Active"]
+    ]
+  }
+}
