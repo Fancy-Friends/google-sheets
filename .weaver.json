@@ -55,7 +55,7 @@
     "packages/py/pyproject.toml": "177cdda3d8fc78fe116d9acdde23dd1d7aee5811eb4905a07aadc82a1923ba97",
     "packages/py/src/fancy_google_sheets/__init__.py": "558e1cb4eac8c90a076accd20f19a678c7531c343815fe85bdf2fb32846a721f",
     "packages/py/src/fancy_google_sheets/_fake.py": "ad090c4aeda9f6453bf1d90d999df714f8bddd5523cad193e5f0b24b359db326",
-    "packages/py/src/fancy_google_sheets/_runtime.py": "348301409008fb3c172fd44c7457eb3619c618a2eb6b0d4b530ab97be365cf53",
+    "packages/py/src/fancy_google_sheets/_runtime.py": "4c2a2c4ea36352fccf28ede540293a05f3786a26b9eb4bb61b4a70c99d62d369",
     "packages/py/src/fancy_google_sheets/actions/__init__.py": "cacc0a344f13cc21225c2fcd473c4b7b07a525ac4c8a1960fae439e35a1578f9",
     "packages/py/src/fancy_google_sheets/actions/row_append.py": "6f00095bdb2e1db0ad578c42f5c6b42b0f55cc749e0b6f9dede9d7f57dbc632e",
     "packages/py/src/fancy_google_sheets/actions/values_get.py": "a06960de16544ed467790ce8abff67fac95a02a4aa29ac6778d898f62e0af77c",
