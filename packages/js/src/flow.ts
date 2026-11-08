@@ -29,14 +29,34 @@ import {
 import { GOOGLE_SHEETS } from "./service.js";
 
 import {
+  googleSheetsBatchUpdateKind,
   googleSheetsRowKind,
   googleSheetsValuesGetKind,
   googleSheetsValuesUpdateKind,
 } from "@particle-academy/google-sheets-ui";
 
+import { googleSheetsBatchUpdate } from "./actions/batch-update.js";
 import { googleSheetsRowAppend } from "./actions/row-append.js";
 import { googleSheetsValuesGet } from "./actions/values-get.js";
 import { googleSheetsValuesUpdate } from "./actions/values-update.js";
+
+export const googleSheetsBatchUpdateExecutor: NodeExecutor = async (ctx) => {
+  const config = ((ctx.node.data as { config?: Record<string, unknown> })?.config ?? {});
+
+  const result = await googleSheetsBatchUpdate({
+    config,
+    input: ctx.inputs?.in,
+  });
+
+  ctx.emit({
+    type: "log",
+    level: "info",
+    nodeId: ctx.node.id,
+    message: `google_sheets batch_update ${(result.data as { id?: string })?.id} (${result.mode})`,
+  });
+
+  return { __port: "out", value: result };
+};
 
 export const googleSheetsRowExecutor: NodeExecutor = async (ctx) => {
   const config = ((ctx.node.data as { config?: Record<string, unknown> })?.config ?? {});
@@ -94,6 +114,7 @@ export const googleSheetsValuesUpdateExecutor: NodeExecutor = async (ctx) => {
 
 /** The kinds a TypeScript host registers. */
 export const GOOGLE_SHEETS_RUNNABLE_KINDS: NodeKindDefinition[] = [
+  { ...googleSheetsBatchUpdateKind, executor: googleSheetsBatchUpdateExecutor },
   { ...googleSheetsRowKind, executor: googleSheetsRowExecutor },
   { ...googleSheetsValuesGetKind, executor: googleSheetsValuesGetExecutor },
   { ...googleSheetsValuesUpdateKind, executor: googleSheetsValuesUpdateExecutor },

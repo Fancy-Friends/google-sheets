@@ -21,6 +21,20 @@ from fancy_google_sheets._fake import FakeValues, seed_for_call
 from fancy_google_sheets.faker import respond
 
 
+def test_batch_update_fakes_the_published_shape() -> None:
+    config = {}
+    fake = FakeValues(seed_for_call("google_sheets", "batch_update", config))
+
+    faked = respond("batch_update", {"config": config, "fake": fake})
+
+    assert faked == {
+        "spreadsheetId": "1Sheet_fake_b28c5cde1be7",
+        "replies": [
+            {},
+        ],
+    }
+
+
 def test_row_append_fakes_the_published_shape() -> None:
     config = {}
     fake = FakeValues(seed_for_call("google_sheets", "row_append", config))

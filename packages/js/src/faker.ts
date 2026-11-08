@@ -24,6 +24,15 @@
 
 import type { ConnectorFaker, FakeRequest } from "@particle-academy/fancy-connector-core";
 
+function fakeBatchUpdate({ config, fake }: FakeRequest): unknown {
+  return {
+    "spreadsheetId": (config.spreadsheetId !== undefined && config.spreadsheetId !== null && config.spreadsheetId !== "" ? String(config.spreadsheetId) : fake.id("1Sheet")),
+    "replies": [
+      {},
+    ],
+  };
+}
+
 function fakeRowAppend({ config, fake }: FakeRequest): unknown {
   const boundSpreadsheetid = (config.spreadsheetId !== undefined && config.spreadsheetId !== null && config.spreadsheetId !== "" ? String(config.spreadsheetId) : fake.id("1Sheet"));
 
@@ -73,6 +82,9 @@ function fakeValuesUpdate({ config, fake }: FakeRequest): unknown {
 
 export const googleSheetsFaker: ConnectorFaker = (operation, request) => {
   switch (operation) {
+    case "batch_update":
+      return fakeBatchUpdate(request);
+
     case "row_append":
       return fakeRowAppend(request);
 

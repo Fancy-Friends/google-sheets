@@ -8,6 +8,18 @@ The four packages share one version, because they are generated from one
 `provider/` definition and a version that meant something different in each
 would be a version nobody could reason about.
 
+## [0.7.0] — 2026-11-08
+
+### Added
+
+- **`batch_update`**: any list of Google Sheets API requests, as JSON, applied
+  all or none. Text replacement is a `findReplace` request, for example
+  `[{"findReplace":{"find":"{{name}}","replacement":"Ada","allSheets":true}}]`.
+  There is no separate `text_replace` for Sheets: `findReplace` needs exactly
+  one of `range`, `sheetId` and `allSheets`, which config fields cannot express
+  safely. Unlike Docs and Slides, Google offers **no revision guard** on a
+  Sheets batch.
+
 ## [0.6.0] — 2026-11-08
 
 ### Added

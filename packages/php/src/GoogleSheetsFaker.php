@@ -35,6 +35,7 @@ final class GoogleSheetsFaker
         $fake = $request['fake'];
 
         return match ($operation) {
+            'batch_update' => self::BatchUpdate($config, $fake),
             'row_append' => self::RowAppend($config, $fake),
             'values_get' => self::ValuesGet($config, $fake),
             'values_update' => self::ValuesUpdate($config, $fake),
@@ -47,6 +48,17 @@ final class GoogleSheetsFaker
                     .'cannot be developed against, tested, or demonstrated.'
             ),
         };
+    }
+
+    /** @param array<string,mixed> $config */
+    private static function BatchUpdate(array $config, mixed $fake): array|\stdClass
+    {
+        return [
+        'spreadsheetId' => ((($v = $config['spreadsheetId'] ?? null) !== null && $v !== '') ? (string) $v : $fake->id('1Sheet')),
+        'replies' => [
+            new \stdClass(),
+        ],
+    ];
     }
 
     /** @param array<string,mixed> $config */

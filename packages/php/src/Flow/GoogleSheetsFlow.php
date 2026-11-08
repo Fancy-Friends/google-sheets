@@ -39,6 +39,7 @@ final class GoogleSheetsFlow
 {
     /** @var list<class-string> */
     public const EXECUTORS = [
+        BatchUpdateExecutor::class,
         RowExecutor::class,
         ValuesGetExecutor::class,
         ValuesUpdateExecutor::class,

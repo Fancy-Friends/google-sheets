@@ -21,6 +21,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import type { PreparedRequest } from "@particle-academy/fancy-connector-core";
 
+import { googleSheetsBatchUpdate } from "../src/actions/batch-update.js";
 import { googleSheetsRowAppend } from "../src/actions/row-append.js";
 import { googleSheetsValuesGet } from "../src/actions/values-get.js";
 import { googleSheetsValuesUpdate } from "../src/actions/values-update.js";
@@ -45,6 +46,36 @@ const CREDENTIALS = {
   "accessToken": "test_accessToken",
   "refreshToken": "test_refreshToken"
 };
+
+test("batch_update sends POST /v4/spreadsheets/{spreadsheetId}:batchUpdate", async () => {
+  const { seen, transport } = capture();
+
+  await googleSheetsBatchUpdate({
+    config: {
+      "spreadsheetId": "example-spreadsheetId",
+      "requests": "[{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"Ticket *42*\"}}]"
+    },
+    credentials: CREDENTIALS,
+    mode: "live",
+    transport,
+  });
+
+  assert.equal(seen.length, 1);
+  assert.equal(seen[0]!.method, "POST");
+  assert.ok(new URL(seen[0]!.url).pathname.endsWith("/v4/spreadsheets/example-spreadsheetId:batchUpdate"), seen[0]!.url);
+
+  assert.deepEqual(JSON.parse(String(seen[0]!.body ?? "{}")), {
+    "requests": [
+      {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": "Ticket *42*"
+        }
+      }
+    ]
+  });
+});
 
 test("row_append sends POST /v4/spreadsheets/{spreadsheetId}/values/{range}:append", async () => {
   const { seen, transport } = capture();
@@ -136,13 +167,10 @@ test("values_update sends PUT /v4/spreadsheets/{spreadsheetId}/values/{range}", 
 test("the credential is placed the way the provider wants it", async () => {
   const { seen, transport } = capture();
 
-  await googleSheetsRowAppend({
+  await googleSheetsBatchUpdate({
     config: {
       "spreadsheetId": "example-spreadsheetId",
-      "range": "example-range",
-      "values": "values-one, values-two",
-      "valueInputOption": "USER_ENTERED",
-      "insertDataOption": "INSERT_ROWS"
+      "requests": "[{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"Ticket *42*\"}}]"
     },
     credentials: CREDENTIALS,
     mode: "live",
@@ -159,12 +187,9 @@ test("a missing required field is refused BEFORE anything is sent", async () => 
   const { seen, transport } = capture();
 
   await assert.rejects(
-    googleSheetsRowAppend({
+    googleSheetsBatchUpdate({
       config: {
-        "range": "example-range",
-        "values": "values-one, values-two",
-        "valueInputOption": "USER_ENTERED",
-        "insertDataOption": "INSERT_ROWS"
+        "requests": "[{\"type\":\"section\",\"text\":{\"type\":\"mrkdwn\",\"text\":\"Ticket *42*\"}}]"
       },
       credentials: CREDENTIALS,
       mode: "live",

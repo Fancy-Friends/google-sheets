@@ -43,6 +43,16 @@ console.log(`  ok   resolved from ${resolved}`);
 
 const GOLDENS = [
   {
+    "operation": "batch_update",
+    "config": {},
+    "expected": {
+      "spreadsheetId": "1Sheet_fake_b28c5cde1be7",
+      "replies": [
+        {}
+      ]
+    }
+  },
+  {
     "operation": "row_append",
     "config": {},
     "expected": {
@@ -103,7 +113,7 @@ for (const { operation, config, expected } of GOLDENS) {
 
 // The ui package is a separate tarball, and js depends on it by its
 // published name — so this also proves that dependency resolves.
-assert.equal(GOOGLE_SHEETS_KINDS.length, 3);
+assert.equal(GOOGLE_SHEETS_KINDS.length, 4);
 for (const kind of GOOGLE_SHEETS_KINDS) {
   const keys = kind.configSchema.map((field) => field.key);
   assert.equal(keys[0], "connection");
