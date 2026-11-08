@@ -74,6 +74,17 @@ The refresh tokens do **not** rotate: the same one is reusable, so a refresh may
 
 ### Actions
 
+#### `batch_update` — Batch update a Google Sheet
+
+Apply a list of Google Sheet API requests to a spreadsheet, all or none.
+
+`POST /v4/spreadsheets/{spreadsheetId}:batchUpdate` · **unsafe to replay** — a retried durable run does it TWICE
+
+| Input | Required | What it is |
+|---|---|---|
+| `spreadsheetId` | yes | The id in the spreadsheet's own URL. |
+| `requests` | yes | Google's Request objects, in order. Example: [{"findReplace":{"find":"{{name}}","replacement":"Ada","allSheets":true}}]. |
+
 #### `row_append` — Google Sheets row
 
 Append a row to a Google Sheet.

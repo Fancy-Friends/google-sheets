@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ParticleAcademy\GoogleSheets\Laravel;
 
+use ParticleAcademy\GoogleSheets\Actions\BatchUpdate;
 use ParticleAcademy\GoogleSheets\Actions\RowAppend;
 use ParticleAcademy\GoogleSheets\Actions\ValuesGet;
 use ParticleAcademy\GoogleSheets\Actions\ValuesUpdate;
@@ -50,11 +51,36 @@ class GoogleSheetsClient
         );
 
         return match ($operation) {
+            BatchUpdate::OPERATION => $this->batchUpdate($config, $input, $idempotencyKey, $credentials, $transport),
             RowAppend::OPERATION => $this->rowAppend($config, $input, $idempotencyKey, $credentials, $transport),
             ValuesGet::OPERATION => $this->valuesGet($config, $input, $idempotencyKey, $credentials, $transport),
             ValuesUpdate::OPERATION => $this->valuesUpdate($config, $input, $idempotencyKey, $credentials, $transport),
             default => throw new InvalidArgumentException('google_sheets: '.$operation.' is not an action of this connector.'),
         };
+    }
+
+    /**
+     * @param  array<string,mixed>  $config
+     * @param  array<string,string>  $credentials
+     */
+    private function batchUpdate(array $config, mixed $input, ?string $idempotencyKey, array $credentials, ?Transport $transport): ConnectorResult
+    {
+        unset($idempotencyKey);
+        $result = ($this->client ?? new ConnectorClient)->call(
+            GoogleSheets::descriptor(),
+            BatchUpdate::OPERATION,
+            $config,
+            [
+                'method' => BatchUpdate::METHOD,
+                'path' => BatchUpdate::path($config),
+                'json' => BatchUpdate::body($config),
+            ],
+            $input,
+            credentials: $credentials === [] ? null : $credentials,
+            transport: $transport,
+        );
+
+        return $result;
     }
 
     /**

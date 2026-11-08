@@ -17,13 +17,14 @@ dependency.
 from __future__ import annotations
 
 from ._fake import FakeValues
+from .actions.batch_update import batch_update
 from .actions.row_append import row_append
 from .actions.values_get import values_get
 from .actions.values_update import values_update
 from .faker import respond
 from .service import BASE_URLS, CONNECTOR_API_VERSION, REQUIRES, SANDBOX, SERVICE, TITLE, descriptor
 
-__version__ = "0.6.0"
+__version__ = "0.7.0"
 
 __all__ = [
     "BASE_URLS",
@@ -33,6 +34,7 @@ __all__ = [
     "SERVICE",
     "TITLE",
     "FakeValues",
+    "batch_update",
     "descriptor",
     "respond",
     "row_append",

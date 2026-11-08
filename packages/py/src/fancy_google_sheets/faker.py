@@ -36,6 +36,19 @@ def _as_number(value: Any) -> float | None:
         return None
 
 
+def _batch_update(config: dict[str, Any], fake: FakeValues) -> Any:
+    return {
+        "spreadsheetId": (
+            str(_v)
+            if (_v := config.get("spreadsheetId")) is not None and _v != ""
+            else fake.id("1Sheet")
+        ),
+        "replies": [
+            {},
+        ],
+    }
+
+
 def _row_append(config: dict[str, Any], fake: FakeValues) -> Any:
     bound_spreadsheetid = (
         str(_v)
@@ -107,6 +120,9 @@ def respond(operation: str, request: dict[str, Any]) -> Any:
     """Dispatch to the fixture for one operation."""
     config: dict[str, Any] = request.get("config") or {}
     fake: FakeValues = request["fake"]
+
+    if operation == "batch_update":
+        return _batch_update(config, fake)
 
     if operation == "row_append":
         return _row_append(config, fake)

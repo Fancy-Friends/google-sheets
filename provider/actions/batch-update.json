@@ -1,0 +1,69 @@
+{
+  "$comment": "v4/spreadsheets.batchUpdate -> POST v4/spreadsheets/{spreadsheetId}:batchUpdate. The requests array is Google's own, passed through as JSON (send.value json) -- every Request kind Google offers, applied ATOMICALLY: if one request is invalid, none is applied. Read from Google's discovery document 2026-11-08. Sheets' BatchUpdateSpreadsheetRequest has NO writeControl, so unlike Docs and Slides there is no revision guard.",
+  "operation": "batch_update",
+  "kind": "batch_update",
+  "title": "Batch update a Google Sheet",
+  "description": "Apply a list of Google Sheet API requests to a spreadsheet, all or none.",
+  "summary": "batch update a spreadsheet",
+  "docs": "https://developers.google.com/workspace/sheets/api/reference/rest/v4/spreadsheets/batchUpdate",
+  "sideEffects": "unsafe-to-replay",
+  "$idempotencyComment": "batchUpdate declares no idempotency key. Whether a retry is safe depends on the requests: a replace is usually a no-op the second time, an insert is not.",
+  "request": {
+    "method": "POST",
+    "path": "/v4/spreadsheets/{spreadsheetId}:batchUpdate",
+    "encoding": "json"
+  },
+  "config": [
+    {
+      "type": "text",
+      "key": "spreadsheetId",
+      "label": "Spreadsheet ID",
+      "required": true,
+      "description": "The id in the spreadsheet's own URL.",
+      "send": {
+        "in": "path",
+        "as": "spreadsheetId",
+        "value": "string"
+      }
+    },
+    {
+      "type": "json",
+      "key": "requests",
+      "label": "Requests",
+      "required": true,
+      "description": "Google's Request objects, in order. Example: [{\"findReplace\":{\"find\":\"{{name}}\",\"replacement\":\"Ada\",\"allSheets\":true}}].",
+      "send": {
+        "in": "body",
+        "as": "requests",
+        "value": "json"
+      }
+    }
+  ],
+  "outputShape": [
+    {
+      "path": "data.spreadsheetId",
+      "type": "string",
+      "description": "The spreadsheet updated."
+    },
+    {
+      "path": "data.replies",
+      "type": "array",
+      "description": "One reply per request, in order. Many kinds reply with an empty object."
+    },
+    {
+      "path": "mode",
+      "type": "string",
+      "description": "Which estate this ran against. Google has no sandbox, so: fake or live."
+    }
+  ],
+  "contract": {
+    "sends": [
+      "spreadsheetId",
+      "requests"
+    ],
+    "reads": [
+      "spreadsheetId",
+      "replies"
+    ]
+  }
+}

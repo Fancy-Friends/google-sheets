@@ -16,6 +16,16 @@ from fancy_google_sheets.faker import respond
 
 GOLDENS = [
     {
+        "operation": "batch_update",
+        "config": {},
+        "expected": {
+            "spreadsheetId": "1Sheet_fake_b28c5cde1be7",
+            "replies": [
+                {},
+            ],
+        },
+    },
+    {
         "operation": "row_append",
         "config": {},
         "expected": {

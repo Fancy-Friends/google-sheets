@@ -25,6 +25,19 @@ import { fakeRequest } from "@particle-academy/fancy-connector-core";
 
 import { googleSheetsFaker } from "../src/faker.js";
 
+test("batch_update fakes the shape Google Sheets publishes", () => {
+  const config = {};
+
+  const faked = googleSheetsFaker("batch_update", fakeRequest("google_sheets", "batch_update", config));
+
+  assert.deepEqual(faked, {
+    "spreadsheetId": "1Sheet_fake_b28c5cde1be7",
+    "replies": [
+      {}
+    ]
+  });
+});
+
 test("row_append fakes the shape Google Sheets publishes", () => {
   const config = {};
 

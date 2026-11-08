@@ -7,11 +7,13 @@
 #
 # npm run provider -- google_sheets
 
+from .batch_update import batch_update
 from .row_append import row_append
 from .values_get import values_get
 from .values_update import values_update
 
 __all__ = [
+    "batch_update",
     "row_append",
     "values_get",
     "values_update",

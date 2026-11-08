@@ -24,6 +24,26 @@ use ParticleAcademy\Connectors\FakeValues;
  * path, with no error.
  */
 
+it('batch_update fakes the shape Google Sheets publishes', function () {
+    $config = [];
+    $fake = new FakeValues(FakeValues::seedForCall('google_sheets', 'batch_update', $config));
+
+    $faked = GoogleSheetsFaker::respond('batch_update', ['config' => $config, 'fake' => $fake]);
+
+    // Through JSON and back, because a faked EMPTY object is a stdClass — the only
+    // PHP value that spells `{}` on the wire — and `toBe` compares objects by
+    // identity. This asserts the VALUES; the `{}`-versus-`[]` spelling is what
+    // weaver's cross-runtime parity suite asserts, byte for byte.
+    $faked = json_decode((string) json_encode($faked), true, 512, JSON_THROW_ON_ERROR);
+
+    expect($faked)->toBe([
+        'spreadsheetId' => '1Sheet_fake_b28c5cde1be7',
+        'replies' => [
+            [],
+        ],
+    ]);
+});
+
 it('row_append fakes the shape Google Sheets publishes', function () {
     $config = [];
     $fake = new FakeValues(FakeValues::seedForCall('google_sheets', 'row_append', $config));

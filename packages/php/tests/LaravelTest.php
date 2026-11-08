@@ -24,20 +24,17 @@ it('registers through its service provider and merges its config', function () {
     expect(config('connectors.google-sheets.credentials'))->toBeArray();
 });
 
-it('fakes row_append and records it for assertSent', function () {
+it('fakes batch_update and records it for assertSent', function () {
     TestApp::boot();
     GoogleSheets::fake();
     $config = [
         'spreadsheetId' => 'example-spreadsheetId',
-        'range' => 'example-range',
-        'values' => 'values-one, values-two',
-        'valueInputOption' => 'USER_ENTERED',
-        'insertDataOption' => 'INSERT_ROWS',
+        'requests' => '[{"type":"section","text":{"type":"mrkdwn","text":"Ticket *42*"}}]',
     ];
-    $result = GoogleSheets::call('row_append', $config);
+    $result = GoogleSheets::call('batch_update', $config);
 
     expect($result->mode->value)->toBe('fake');
-    GoogleSheets::assertSent('row_append', fn (array $sent): bool => $sent == $config);
+    GoogleSheets::assertSent('batch_update', fn (array $sent): bool => $sent == $config);
     GoogleSheets::assertNotSent('no_such_operation');
     GoogleSheets::assertSentCount(1);
 });
